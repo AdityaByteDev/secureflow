@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; worker-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>SecureFlow</title>
+<meta name="description" content="AI security reviewer for vibe-coded websites. Line-level evidence, repair prompts, rescan verification.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/site.css">
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+</head>
+<body>
+
+<div id="backdrop" aria-hidden="true"><span>UNSEEN</span></div>
+<div class="fallback" aria-hidden="true"><div class="fb-slab"><i></i><i class="r"></i><i></i><i class="r"></i><i></i><i></i><i class="r"></i><i></i></div><div class="fb-plinth"></div></div>
+<div id="stage-wrap"><canvas id="stage" aria-hidden="true"></canvas><div class="scrim"></div></div>
+<div id="loader">Preparing the reveal</div>
+<div class="vignette"></div>
+<div class="grain"></div>
+<div id="callouts" aria-hidden="true"><svg id="co-svg"></svg></div>
+
+<header class="nav">
+  <a class="brand" href="#hero" aria-label="SecureFlow home">
+    <svg viewBox="0 0 26 26" fill="none" aria-hidden="true"><rect x=".75" y=".75" width="24.5" height="24.5" rx="7" stroke="#ede6d9" stroke-opacity=".5"/><path d="M7 9h12M7 13h9M7 17h12" stroke="#ede6d9" stroke-width="1.6" stroke-linecap="round"/><circle cx="19" cy="13" r="1.8" fill="#d4513f"/></svg>
+    SecureFlow
+  </a>
+  <nav class="nav-links" aria-label="Sections">
+    <a href="#unveil" data-nav="unveil">Unveil</a>
+    <a href="#scan" data-nav="scan">Evidence</a>
+    <a href="#verify" data-nav="verify">Verify</a>
+    <a href="#workspace" data-nav="work">Workspace</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+  <a class="btn btn-solid btn-sm" href="app.html">Scan your project <span class="arrow">→</span></a>
+</header>
+
+<main>
+  <section id="hero" data-scene="hero">
+    <div class="hero-copy shadowed">
+      <div class="eyebrow">CY-02 · AI security review for vibe-coded sites</div>
+      <h1 class="caps">
+        <span class="row"><span>Uncover</span></span>
+        <span class="row"><span><em>what your</em> <span class="tag-block">AI</span></span></span>
+        <span class="row"><span>Shipped.</span></span>
+      </h1>
+      <p class="hero-sub">Your AI tool built the site in minutes. SecureFlow reads the code underneath: every weakness traced to its exact line, a repair prompt for your AI tool, and a rescan that checks the fix.</p>
+      <div class="hero-cta">
+        <a class="btn btn-solid" href="app.html">Scan your project <span class="arrow">→</span></a>
+        <a class="btn btn-ghost" href="#unveil">Lift the cover ↓</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><b>3 layers reviewed</b>Client, API and data</div>
+      <div class="stat"><b>Line-level evidence</b>Every finding cites real code</div>
+      <div class="stat"><b>Rescan compared</b>What changed between scans</div>
+      <div class="scroll-cue"><span>Scroll to pull the cover</span><span class="rail"></span></div>
+    </div>
+  </section>
+
+  <section id="unveil" class="scene" data-scene="unveil">
+    <div class="sticky">
+      <div class="cap cap-bl shadowed" data-range="0,.28">
+        <div class="eyebrow">01 · The unveil</div>
+        <h2 class="caps" style="margin-top:16px">Generated<br><em>in minutes.</em></h2>
+        <p>Prompted, previewed, deployed. The finish looks expensive. Nobody read what's underneath.</p>
+      </div>
+      <div class="cap cap-bl shadowed" data-range=".32,.62">
+        <h2 class="caps">Beautiful on<br>the <em>surface.</em></h2>
+      </div>
+      <div class="cap cap-bl shadowed" data-range=".66,.96">
+        <h2 class="caps">Underneath:<br><em>three layers.</em></h2>
+        <p>The browser code, the API and the data layer. Each one ships its own mistakes.</p>
+      </div>
+      <div class="chapter"><span>01 / 03</span><span class="bar"><i></i></span><span>Unveil</span></div>
+    </div>
+  </section>
+
+  <section id="scan" class="scene" data-scene="scan">
+    <div class="sticky">
+      <div class="scan-col shadowed">
+        <div class="eyebrow">02 · Evidence · demo project</div>
+        <h2 class="caps" style="margin-top:16px">Layer by layer,<br><em>to the line.</em></h2>
+        <div class="layers" id="layer-tabs"></div>
+        <p class="layer-desc" id="layer-desc"></p>
+        <ul class="ann" id="ann"></ul>
+      </div>
+      <div class="chapter"><span>02 / 03</span><span class="bar"><i></i></span><span>Evidence</span></div>
+    </div>
+  </section>
+
+  <section id="verify" class="scene" data-scene="verify">
+    <div class="sticky">
+      <div class="verify-col shadowed">
+        <div class="eyebrow">03 · Verify</div>
+        <svg class="gauge" id="big-gauge" viewBox="0 0 320 320" role="img" aria-label="Risk score gauge"></svg>
+        <div class="verify-text">
+          <div class="vt" data-range="0,.38">
+            <h2 class="caps">Measured,<br><em>not guessed.</em></h2>
+            <p>Every finding is weighted by severity into one risk score out of 100. This project scores <b id="v-before">0</b>.</p>
+          </div>
+          <div class="vt" data-range=".42,.96">
+            <h2 class="caps">Fix with a prompt.<br><em>Then rescan.</em></h2>
+            <p>You paste each repair prompt into your AI tool and rescan. Here the demo’s prepared patched files stand in for that step, and SecureFlow compares the two scans.</p>
+            <div class="diff-row">
+              <div class="ok"><b id="d-res">0</b>no longer detected</div>
+              <div><b id="d-rem">0</b>still detected</div>
+              <div><b id="d-new">0</b>new</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chapter"><span>03 / 03</span><span class="bar"><i></i></span><span>Verify</span></div>
+    </div>
+  </section>
+
+  <section id="workspace" class="cta-scene" data-scene="work">
+    <div class="ws-intro">
+      <div><div class="eyebrow">The workspace</div><h2 class="caps">Run it on <em>your project.</em></h2></div>
+      <ol class="flow-strip" aria-label="How it works"><li>Import</li><li>Scan</li><li>Understand</li><li>Fix</li><li>Rescan</li><li>Verify</li><li>Remember</li></ol>
+    </div>
+    <div class="cta-grid">
+      <div class="cta-card"><span class="n">01</span><h3>Local engine</h3><p>32 rules run in your browser tab. Line-level evidence, severity and confidence, nothing uploaded.</p></div>
+      <div class="cta-card"><span class="n">02</span><h3>AI deep check <small>opt-in</small></h3><p>Gemini reviews masked code, a second pass challenges every claim, and anything it cannot quote from your code is dropped.</p></div>
+      <div class="cta-card"><span class="n">03</span><h3>Fix guidance, refined 10×</h3><p>It explains how to fix, never rewrites for you, and checks its own advice ten times before showing it.</p></div>
+      <div class="cta-card"><span class="n">04</span><h3>Codebase memory</h3><p>Come back with the same project and SecureFlow recognises it from line fingerprints, then checks which fixes you made.</p></div>
+    </div>
+    <div class="cta-go"><a class="btn btn-solid btn-lg" href="app.html">Open the workspace <span class="arrow">→</span></a><span class="fine">Opens a separate page. The demo project is preloaded.</span></div>
+  </section>
+</main>
+
+<footer>
+  <span>SecureFlow · AI Security Reviewer for Vibe-Coded Websites</span>
+  <span>The engine runs in your browser. AI deep check and Codebase memory are opt-in. Findings are evidence for review, not a full security audit.</span>
+  <span>JU Techfest 2026 · CY-02</span>
+</footer>
+
+<div id="announce" class="sr-only" aria-live="polite"></div>
+<div id="tip" role="status"></div>
+<div class="toast" id="toast" role="status">Copied</div>
+
+<!-- ===== cloth physics (runs once in a Web Worker, baked into frames) ===== -->
+<script src="src/cloth.js"></script>
+
+<!-- ===== scanner engine (for the story demo), scroll choreography ===== -->
+<script src="src/engine.js"></script>
+<script src="src/demo.js"></script>
+<script src="src/common.js"></script>
+<script src="src/story.js"></script>
+
+<!-- ===== cinematic 3D stage ===== -->
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+window.SF_3D_STARTED=true;   // the imports resolved; app.js falls back to static art if this never runs
+const SF=window.SF, { clamp, ease, smooth }=SF;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const canvas=document.getElementById('stage'), wrap=document.getElementById('stage-wrap'), tip=document.getElementById('tip'), loader=document.getElementById('loader');
+const coSvg=document.getElementById('co-svg'), coWrap=document.getElementById('callouts');
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let renderer;
+try { renderer=new THREE.WebGLRenderer({canvas, antialias:true, powerPreference:'high-performance'}); }
+catch(e){ document.documentElement.classList.add('no-webgl'); loader.classList.add('done'); throw e; }
+renderer.setClearColor(0x0b0a09,1);
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure=1.0;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFShadowMap;
+
+const scene=new THREE.Scene();
+scene.background=new THREE.Color(0x0b0a09);
+scene.fog=new THREE.Fog(0x0b0a09,12,30);
+const camera=new THREE.PerspectiveCamera(32,1,.1,100);
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(renderer),.04).texture;
+
+/* ---------- light: one museum spotlight that follows the exhibit ---------- */
+scene.add(new THREE.HemisphereLight(0xfff2e2,0x0b0a09,.14));
+const spot=new THREE.SpotLight(0xffe7cf,300,0,.36,.7,2);
+spot.position.set(.4,9.4,2.4); spot.target.position.set(0,1.4,0);
+spot.castShadow=true; spot.shadow.mapSize.set(1024,1024); spot.shadow.bias=-.0003; spot.shadow.normalBias=.03;
+spot.shadow.camera.near=3; spot.shadow.camera.far=18;
+scene.add(spot,spot.target);
+const rim=new THREE.DirectionalLight(0xc9a56b,.9); rim.position.set(-5,3.5,-6); scene.add(rim);
+const fill=new THREE.DirectionalLight(0xffffff,.07); fill.position.set(4,2,8); scene.add(fill);
+
+/* ---------- ground ---------- */
+function radialTex(i,o){ const c=document.createElement('canvas'); c.width=c.height=256; const g=c.getContext('2d'), gr=g.createRadialGradient(128,128,128*i,128,128,128*o); gr.addColorStop(0,'#fff'); gr.addColorStop(1,'#000'); g.fillStyle=gr; g.fillRect(0,0,256,256); return new THREE.CanvasTexture(c); }
+const floor=new THREE.Mesh(new THREE.PlaneGeometry(48,48), new THREE.MeshStandardMaterial({color:0x15130f,roughness:.92,envMapIntensity:.06,transparent:true,alphaMap:radialTex(.16,.6),depthWrite:false}));
+floor.rotation.x=-Math.PI/2; floor.receiveShadow=true; scene.add(floor);
+const PR=2.75;
+const plinth=new THREE.Mesh(new THREE.CylinderGeometry(PR,PR+.1,.14,128), new THREE.MeshStandardMaterial({color:0x1b1916,roughness:.5,metalness:.05,envMapIntensity:.25}));
+plinth.position.y=.07; plinth.receiveShadow=true; plinth.castShadow=true; scene.add(plinth);
+const ring=new THREE.Mesh(new THREE.TorusGeometry(PR+.04,.006,8,220), new THREE.MeshStandardMaterial({color:0xc9a56b,roughness:.3,metalness:.95}));
+ring.rotation.x=Math.PI/2; ring.position.y=.141; scene.add(ring);
+
+/* ---------- backdrop word, in 3D space behind everything ---------- */
+const wc=document.createElement('canvas'); wc.width=2048; wc.height=480; const wx=wc.getContext('2d');
+const wordTex=new THREE.CanvasTexture(wc); wordTex.colorSpace=THREE.SRGBColorSpace;
+const word=new THREE.Mesh(new THREE.PlaneGeometry(26,6.1), new THREE.MeshBasicMaterial({map:wordTex,transparent:true,depthWrite:false,fog:false,opacity:0}));
+word.position.set(0,3.6,-9); scene.add(word);
+let curWord='', wordO=0;
+function drawWord(t){ wx.clearRect(0,0,2048,480); if ('fontStretch' in wx) wx.fontStretch='expanded'; wx.font='800 360px Archivo, sans-serif'; wx.textAlign='center'; wx.textBaseline='middle';
+  const g=wx.createLinearGradient(0,40,0,440); g.addColorStop(0,'rgba(237,230,217,.22)'); g.addColorStop(1,'rgba(237,230,217,.03)'); wx.fillStyle=g; wx.fillText(t,1024,250); wordTex.needsUpdate=true; }
+
+/* ---------- three code layers (client / API / data) ---------- */
+const SL={w:2.2,h:3.0,base:.14}, LT=.06;
+const MERGED=[ {x:0,z:.08,r:0}, {x:0,z:0,r:0}, {x:0,z:-.08,r:0} ];
+const EXPL=[ {x:-1.55,z:.75,r:.26}, {x:0,z:0,r:0}, {x:1.55,z:-.75,r:-.26} ];
+function roundedRect(w,h,r){ const s=new THREE.Shape(),x=-w/2,y=-h/2; s.moveTo(x+r,y); s.lineTo(x+w-r,y); s.quadraticCurveTo(x+w,y,x+w,y+r); s.lineTo(x+w,y+h-r); s.quadraticCurveTo(x+w,y+h,x+w-r,y+h); s.lineTo(x+r,y+h); s.quadraticCurveTo(x,y+h,x,y+h-r); s.lineTo(x,y+r); s.quadraticCurveTo(x,y,x+r,y); return s; }
+const bodyGeo=new THREE.ExtrudeGeometry(roundedRect(SL.w-.02,SL.h-.02,.05),{depth:LT-.02,bevelEnabled:true,bevelThickness:.01,bevelSize:.01,bevelSegments:4,curveSegments:10});
+bodyGeo.translate(0,0,-(LT-.02)/2);
+const bodyMat=new THREE.MeshPhysicalMaterial({color:0x0d0d0e,roughness:.3,metalness:.4,clearcoat:.8,clearcoatRoughness:.2,envMapIntensity:.7});
+const FW=SL.w-.16, FH=SL.h-.16, CW=1024, CH=Math.round(1024*FH/FW), TOP=124, BOT=44;
+// the code face is drawn in 1024-wide logical units onto a 2x (or 1.5x on small screens) backing canvas, so text stays sharp on high-DPI screens
+const TXS=Math.min(1.25, Math.max(1, window.devicePixelRatio || 1));
+const KW=/^(import|from|const|let|var|function|return|await|async|new|if|else|true|false|export)$/;
+const SEVC={critical:'#d4513f',high:'#d98a3e',medium:'#c9a56b',low:'#8a847a',info:'#6f8796',resolved:'#9bb08f'};
+const layers=SF.layers.map((L,k)=>{
+  const g=new THREE.Group(); g.position.y=SL.base+SL.h/2; scene.add(g);
+  const body=new THREE.Mesh(bodyGeo,bodyMat); body.castShadow=true; body.receiveShadow=true; g.add(body);
+  const c=document.createElement('canvas'); c.width=Math.round(CW*TXS); c.height=Math.round(CH*TXS);
+  const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=1;
+  tex.minFilter=THREE.LinearFilter; tex.magFilter=THREE.LinearFilter; tex.generateMipmaps=false;
+  const face=new THREE.Mesh(new THREE.PlaneGeometry(FW,FH), new THREE.MeshPhysicalMaterial({map:tex,emissive:0xffffff,emissiveMap:tex,emissiveIntensity:.62,roughness:.42,clearcoat:.55,clearcoatRoughness:.08,envMapIntensity:.18}));
+  face.position.z=LT/2+.002; face.userData.k=k; g.add(face);
+  const D={ vuln:{code:L.vuln.split('\n'),hits:new Map()}, fixed:{code:L.fixed.split('\n'),hits:new Map()} };
+  L.vf.forEach(f=>{ if(!D.vuln.hits.has(f.line)) D.vuln.hits.set(f.line,f); });
+  const vs=new Set(D.vuln.code);
+  D.fixed.code.forEach((l,i)=>{ if (l.trim() && !vs.has(l)) D.fixed.hits.set(i+1,{resolved:true,line:i+1,rule:{title:'Patched · rescan clean',sev:'resolved'}}); });
+  L.ff.forEach(f=>D.fixed.hits.set(f.line,f));
+  const ctx=c.getContext('2d'); ctx.setTransform(TXS,0,0,TXS,0,0);
+  return {L,k,g,c,ctx,tex,face,D,key:''};
+});
+function drawLayer(o,mode,reveal){
+  const {ctx:cx,D,L,k}=o, d=D[mode], n=d.code.length, lh=(CH-TOP-BOT)/n;
+  const maxLen=Math.max(...d.code.map(s=>s.length)), fs=Math.min(21, lh*.58, (CW-150)/(maxLen*.61));
+  cx.fillStyle='#0d0d0e'; cx.fillRect(0,0,CW,CH);
+  const g=cx.createLinearGradient(0,0,0,CH); g.addColorStop(0,'rgba(255,240,220,.05)'); g.addColorStop(.4,'rgba(255,240,220,0)'); cx.fillStyle=g; cx.fillRect(0,0,CW,CH);
+  cx.textBaseline='middle'; cx.font='600 17px "JetBrains Mono", monospace'; cx.fillStyle='#c9a56b'; cx.fillText('LAYER 0'+(k+1)+' · '+L.name.toUpperCase(),40,52);
+  cx.font='400 17px "JetBrains Mono", monospace'; cx.fillStyle='#958e82'; cx.fillText(L.file,40,82);
+  const flagged=[...d.hits.keys()].filter(l=>l-.5<reveal*n).length;
+  const label= mode==='vuln' ? (reveal>0 ? flagged+' FLAGGED' : 'UNREVIEWED') : (reveal>=1 ? 'RESCAN PASSED' : 'RESCANNING');
+  cx.textAlign='right'; cx.font='600 17px "JetBrains Mono", monospace'; cx.fillStyle= mode==='vuln' ? (reveal>0?'#d4513f':'#7a7469') : '#9bb08f'; cx.fillText(label,CW-40,52); cx.textAlign='left';
+  cx.fillStyle='rgba(237,230,217,.12)'; cx.fillRect(40,104,CW-80,1.5);
+  cx.font=`400 ${fs}px "JetBrains Mono", monospace`;
+  for (let i=0;i<n;i++){
+    const y=TOP+lh*(i+.5), hit=d.hits.get(i+1), shown=hit && (i+.5)/n<reveal;
+    if (shown){ const c=SEVC[hit.rule.sev]; cx.fillStyle=c+'2a'; cx.fillRect(28,y-lh/2+2,CW-56,lh-4); cx.fillStyle=c; cx.fillRect(28,y-lh/2+2,5,lh-4); }
+    cx.fillStyle= shown ? SEVC[hit.rule.sev] : '#6a655c'; cx.textAlign='right'; cx.fillText(String(i+1),88,y); cx.textAlign='left';
+    let x=108; const line=SF.mask(d.code[i]), re=/(\/\/.*$)|(`(?:[^`\\]|\\.)*`|'(?:[^'\\]|\\.)*'|"(?:[^"\\]|\\.)*")|([A-Za-z_$][\w$]*)(?=\s*\()|([A-Za-z_$][\w$]*)|(\s+)|([^\sA-Za-z_$])/g; let m;
+    while ((m=re.exec(line))){ const t=m[0];
+      cx.fillStyle= m[1]?'#7d776d': m[2]?'#c8d2b6': m[3]?'#fff4e2': (m[4]&&KW.test(t))?'#e0bb7c': m[4]?'#e6ddcc':'#aaa293';
+      if (!m[5]) cx.fillText(t,x,y); x+=cx.measureText(t).width; if (x>CW-30) break; }
+  }
+  o.tex.needsUpdate=true;
+}
+// redraw (and re-upload) a layer texture only when the set of highlighted lines actually changes
+let drawBudget=2;
+function updateLayer(o,mode,reveal){ const d=o.D[mode], n=d.code.length; let c=0; d.hits.forEach((_,l)=>{ if ((l-.5)/n<reveal) c++; });
+  const key=mode+c+(reveal>0?'r':'')+(reveal>=1?'d':''); if (key===o.key) return false;
+  if (drawBudget<=0) return 'pending';
+  drawBudget--; o.key=key; drawLayer(o,mode,reveal); return true; }
+document.fonts.ready.then(()=>{ layers.forEach(o=>o.key=''); curWord=''; });
+
+/* scan beam (re-parented to whichever layer is being read) */
+const beam=new THREE.Group();
+const beamLine=new THREE.Mesh(new THREE.BoxGeometry(SL.w+.16,.006,.006), new THREE.MeshBasicMaterial({color:0xfff3e0,toneMapped:false}));
+beamLine.position.z=LT/2+.03; beam.add(beamLine);
+const trailMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uC:{value:new THREE.Color(0xffefd8)},uO:{value:.3}},
+  vertexShader:'varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }',
+  fragmentShader:'varying vec2 vUv; uniform vec3 uC; uniform float uO; void main(){ float a=pow(1.-vUv.y,3.)*uO*smoothstep(0.,.08,vUv.x)*smoothstep(1.,.92,vUv.x); gl_FragColor=vec4(uC*a,a); }'});
+const trail=new THREE.Mesh(new THREE.PlaneGeometry(SL.w+.16,.5),trailMat); trail.position.set(0,.25,LT/2+.02); beam.add(trail);
+const beamLight=new THREE.PointLight(0xffe9d0,1.4,1.6,2); beamLight.position.z=LT/2+.35; beam.add(beamLight);
+
+/* ---------- light cone + dust ---------- */
+const beamH=spot.position.length();
+const coneGeo=new THREE.ConeGeometry(2.9,beamH,64,1,true); coneGeo.translate(0,-beamH/2,0); coneGeo.rotateX(-Math.PI/2);
+const coneMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,uniforms:{uO:{value:.07}},
+  vertexShader:'varying vec2 vUv; varying vec3 vN; varying vec3 vV; void main(){ vUv=uv; vec4 mv=modelViewMatrix*vec4(position,1.); vN=normalize(normalMatrix*normal); vV=normalize(-mv.xyz); gl_Position=projectionMatrix*mv; }',
+  fragmentShader:'varying vec2 vUv; varying vec3 vN; varying vec3 vV; uniform float uO; void main(){ float f=pow(abs(dot(vN,vV)),2.2); float a=f*smoothstep(0.,.9,vUv.y)*uO; gl_FragColor=vec4(vec3(1.,.93,.82)*a,a); }'});
+const cone=new THREE.Mesh(coneGeo,coneMat); scene.add(cone);
+const DUST=reduce?0:360, dPos=new Float32Array(DUST*3), dSeed=new Float32Array(DUST);
+for (let i=0;i<DUST;i++){ const h=Math.random(), r=Math.sqrt(Math.random())*2.6*(1-h*.85), a=Math.random()*Math.PI*2; dPos[i*3]=Math.cos(a)*r; dPos[i*3+1]=.3+h*6.8; dPos[i*3+2]=Math.sin(a)*r+.3; dSeed[i]=Math.random()*100; }
+const dGeo=new THREE.BufferGeometry(); dGeo.setAttribute('position',new THREE.BufferAttribute(dPos,3));
+const spr=document.createElement('canvas'); spr.width=spr.height=64; { const g=spr.getContext('2d'), gr=g.createRadialGradient(32,32,0,32,32,32); gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(1,'rgba(255,255,255,0)'); g.fillStyle=gr; g.fillRect(0,0,64,64); }
+const dust=new THREE.Points(dGeo,new THREE.PointsMaterial({size:.026,map:new THREE.CanvasTexture(spr),color:0xffe8cc,transparent:true,opacity:.5,depthWrite:false,blending:THREE.AdditiveBlending}));
+scene.add(dust);
+
+/* ---------- red velvet cover: real cloth physics, baked in a worker ---------- */
+function weaveNormal(){
+  const S=256, c=document.createElement('canvas'); c.width=c.height=S; const g=c.getContext('2d'), img=g.createImageData(S,S), H=new Float32Array(S*S);
+  for (let y=0;y<S;y++) for (let x=0;x<S;x++){ const u=x/S*Math.PI*2, v=y/S*Math.PI*2;
+    H[y*S+x]=.55*Math.sin(u*24)*Math.sin(v*24+Math.sin(u*24)*.6)+.3*Math.sin((u+v)*16)+.15*Math.sin(u*64)*Math.sin(v*64); }
+  for (let y=0;y<S;y++) for (let x=0;x<S;x++){ const xl=H[y*S+(x+S-1)%S], xr=H[y*S+(x+1)%S], yu=H[((y+S-1)%S)*S+x], yd=H[((y+1)%S)*S+x];
+    let nx=(xl-xr)*1.2, ny=(yu-yd)*1.2, nz=1; const l=Math.hypot(nx,ny,nz); const o=(y*S+x)*4;
+    img.data[o]=(nx/l*.5+.5)*255; img.data[o+1]=(ny/l*.5+.5)*255; img.data[o+2]=(nz/l*.5+.5)*255; img.data[o+3]=255; }
+  g.putImageData(img,0,0); const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(10,20); return t;
+}
+const CL={nx:34,nz:66,width:3.5,length:6.9,hz:120,iters:8,bend:.22,thick:.03,round:.075,top:SL.base+SL.h,box:[0,SL.base+SL.h/2,0,SL.w/2,SL.h/2,.11],plinthR:PR,plinthTop:.14,
+  settle:2.0,pull:3.0,tail:.6,every:3,grabRows:2,pdx:1.6,pdy:8.5,pdz:-4.2,spread:1.6};
+const clothGeo=new THREE.PlaneGeometry(1,1,CL.nx-1,CL.nz-1);
+const clothMat=new THREE.MeshPhysicalMaterial({color:0x6a0c13,roughness:.82,metalness:0,sheen:1,sheenRoughness:.42,sheenColor:new THREE.Color(0xd9504f),normalMap:weaveNormal(),normalScale:new THREE.Vector2(.28,.28),side:THREE.DoubleSide,envMapIntensity:.35,transparent:true});
+const cloth=new THREE.Mesh(clothGeo,clothMat); cloth.castShadow=true; cloth.receiveShadow=true; cloth.visible=false; cloth.frustumCulled=false; scene.add(cloth);
+let CF=null;
+function baked(r){ if (CF) return; CF=r; needs=true; window.SF_3D_READY=true; document.documentElement.classList.remove('no-webgl'); layers.forEach(o=>o.g.visible=true); cloth.visible=true; loader.classList.add('done'); canvas.classList.add('ready'); }
+layers.forEach(o=>o.g.visible=false);
+try {
+  const src=window.bakeCloth.toString()+'\nonmessage=function(e){var r=bakeCloth(e.data);postMessage(r,[r.frames.buffer]);};';
+  const w=new Worker(URL.createObjectURL(new Blob([src],{type:'text/javascript'})));
+  w.onmessage=e=>{ baked(e.data); w.terminate(); };
+  w.onerror=()=>{ baked(window.bakeCloth(CL)); };
+  w.postMessage(CL);
+} catch(e){ setTimeout(()=>baked(window.bakeCloth(CL)),30); }
+
+const cPos=clothGeo.attributes.position, mouseW=new THREE.Vector3(), plane=new THREE.Plane(new THREE.Vector3(0,0,1),-.45);
+let ripple=0;
+function updateCloth(t,time){
+  if (!CF) return;
+  if (t>=.98){ cloth.visible=false; return; }
+  cloth.visible=true; clothMat.opacity=1-smooth(.86,1,t);
+  const N=CF.NX*CF.NZ, fF=t*(CF.F-1), f0=Math.floor(fF), f1=Math.min(CF.F-1,f0+1), a=fF-f0, A=CF.frames, o0=f0*N*3, o1=f1*N*3, arr=cPos.array;
+  for (let i=0;i<N*3;i++) arr[i]=A[o0+i]+(A[o1+i]-A[o0+i])*a;
+  if (t<.02 && ripple>.002){ for (let i=0;i<N;i++){ const z=arr[i*3+2]; if (z<.1) continue; const dx=arr[i*3]-mouseW.x, dy=arr[i*3+1]-mouseW.y, d=Math.sqrt(dx*dx+dy*dy); if (d<1.2) arr[i*3+2]+=Math.sin(d*12-time*7)*Math.exp(-d*3)*.045*ripple; } }
+  cPos.needsUpdate=true;
+  if (!cloth.hasInitNormals || (t<.02 && ripple>.002)){
+    clothGeo.computeVertexNormals();
+    cloth.hasInitNormals=true;
+  }
+}
+
+/* ---------- camera: fit the scene into the free area beside each chapter's text ---------- */
+let mobile=false, prCap=2, needs=true; const tanV=Math.tan(THREE.MathUtils.degToRad(16));
+const SAFE={};
+function measure(){
+  const W=innerWidth,H=innerHeight; mobile=W<820;
+  const blocks={hero:[document.querySelector('.hero-copy')], unveil:[...document.querySelectorAll('#unveil .cap')], scan:[document.querySelector('.scan-col')], verify:[document.querySelector('.verify-col')]};
+  for (const ch in blocks){
+    let r=0,t=H; blocks[ch].forEach(e=>{ r=Math.max(r,e.offsetLeft+e.offsetWidth); t=Math.min(t,e.offsetTop); });
+    if (mobile) SAFE[ch]={x0:16,x1:W-16,y0:70,y1:Math.max(H*.38,t-14)};
+    else { let x0=r+56, x1=W-(ch==='scan'?290:48); if (x1-x0<W*.3){ x0=W*.5; x1=W-(ch==='scan'?250:32); } SAFE[ch]={x0,x1,y0:86,y1:H-64}; }
+  }
+}
+function resize(){
+  const w=innerWidth,h=innerHeight;
+  renderer.setPixelRatio(Math.max(1,Math.min(devicePixelRatio,w<820?Math.min(prCap,1.75):prCap))); renderer.setSize(w,h,false);
+  camera.aspect=w/h; camera.updateProjectionMatrix(); measure(); needs=true;
+}
+addEventListener('resize',resize); resize();
+document.fonts.ready.then(()=>{ measure(); needs=true; });
+let slowFrames=0;
+function perfCheck(ms){ if (ms>24) slowFrames++; else slowFrames=Math.max(0,slowFrames-1); if (slowFrames>20 && prCap>1){ prCap=prCap>1.5?1.5:prCap>1.25?1.25:1; slowFrames=0; resize(); } }
+const V=(x,y,z)=>new THREE.Vector3(x,y,z);
+// keyframe: look target, azimuth, elevation, the world-size of what must fit, and which chapter's free area to fit it into
+function kf(t,az,elev,w,h,ch){ return {t,az,elev,w,h,ch}; }
+function lerpK(a,b,u){ return {t:a.t.clone().lerp(b.t,u),az:lerp(a.az,b.az,u),elev:lerp(a.elev,b.elev,u),w:lerp(a.w,b.w,u),h:lerp(a.h,b.h,u),ca:a.ch,cb:b.ch,u}; }
+const HERO=kf(V(0,1.65,0),0,.03,3.8,3.7,'hero'), UNV=kf(V(0,1.65,0),-.1,.03,3.5,3.5,'unveil'),
+      OVER=kf(V(0,1.6,0),.04,.07,6.0,3.5,'scan'), VER=kf(V(0,1.65,0),-.18,.04,3.1,3.5,'verify');
+const FOC=EXPL.map(e=>kf(V(e.x,1.62,e.z),.1-e.r*.6,.02,2.5,3.3,'scan'));
+const SCAN_KF=[[0,UNV],[.12,OVER],[.2,FOC[0]],[.35,FOC[0]],[.43,FOC[1]],[.6,FOC[1]],[.68,FOC[2]],[.85,FOC[2]],[.95,OVER]];
+function scanCam(p){ for (let i=0;i<SCAN_KF.length-1;i++){ const [p0,a]=SCAN_KF[i],[p1,b]=SCAN_KF[i+1]; if (p<=p1) return lerpK(a,b,ease(clamp((p-p0)/(p1-p0)))); } const l=SCAN_KF[SCAN_KF.length-1][1]; return lerpK(l,l,0); }
+function placeCamera(c, mx, my){
+  const W=innerWidth,H=innerHeight, A=SAFE[c.ca], B=SAFE[c.cb], u=c.u;
+  const x0=lerp(A.x0,B.x0,u), x1=lerp(A.x1,B.x1,u), y0=lerp(A.y0,B.y0,u), y1=lerp(A.y1,B.y1,u);
+  const sw=Math.max(80,x1-x0), sh=Math.max(80,y1-y0);
+  const dist=Math.max(c.w*H/(2*tanV*sw*.94), c.h*H/(2*tanV*sh*.94));
+  const az=c.az+mx*.04;
+  camera.position.set(c.t.x+Math.sin(az)*dist, c.t.y+c.elev*dist+my*.12, c.t.z+Math.cos(az)*dist);
+  camera.lookAt(c.t);
+  camera.setViewOffset(W,H,W/2-(x0+x1)/2,H/2-(y0+y1)/2,W,H);
+}
+
+/* ---------- pointer ---------- */
+const mouse={x:0,y:0,sx:0,sy:0,px:0,py:0,has:false}, ndc=new THREE.Vector2(), ray=new THREE.Raycaster();
+addEventListener('pointermove',e=>{ const nx=e.clientX/innerWidth*2-1, ny=-(e.clientY/innerHeight)*2+1; ripple=Math.min(1,ripple+Math.hypot(nx-mouse.x,ny-mouse.y)*5); Object.assign(mouse,{x:nx,y:ny,px:e.clientX,py:e.clientY,has:true}); needs=true; },{passive:true});
+document.addEventListener('pointerleave',()=>{ mouse.has=false; });
+
+/* ---------- callouts ---------- */
+const NS='http://www.w3.org/2000/svg';
+const CO=[]; layers.forEach(o=>o.L.vf.forEach(f=>{ if (CO.some(c=>c.k===o.k&&c.f.line===f.line)) return;
+  const el=document.createElement('div'); el.className='co'; el.innerHTML=`<span class="sev sev-${f.rule.sev}">${f.rule.sev}</span><b>${f.rule.title}</b><span class="mono">${o.L.file} · L${f.line} · ${f.rule.cwe}</span>`; coWrap.appendChild(el);
+  const path=document.createElementNS(NS,'path'), dot=document.createElementNS(NS,'circle'); dot.setAttribute('r',4); dot.style.stroke=({critical:'#d4513f',high:'#d98a3e',medium:'#c9a56b',low:'#8a847a',info:'#6f8796'})[f.rule.sev]; path.style.opacity=0; dot.style.opacity=0; coSvg.append(path,dot);
+  CO.push({k:o.k,f,el,path,dot,on:false}); }));
+const tmp=new THREE.Vector3();
+function hideCo(c){ if (!c.on) return; c.on=false; c.el.classList.remove('on'); c.path.style.opacity=0; c.dot.style.opacity=0; }
+function updateCallouts(act,reveal,visible){
+  const show=visible && !mobile && act>=0 && act<3, items=[];
+  CO.forEach(c=>{
+    const n=layers[c.k].D.vuln.code.length, on=show && c.k===act && (c.f.line-.5)/n < reveal[c.k];
+    if (on){ const lh=FH*(CH-TOP-BOT)/CH/n, yTop=FH/2-TOP/CH*FH; tmp.set(FW/2-.05, yTop-lh*(c.f.line-.5), LT/2+.01); layers[c.k].g.localToWorld(tmp); tmp.project(camera);
+      items.push({c,x:(tmp.x*.5+.5)*innerWidth,y:(-tmp.y*.5+.5)*innerHeight}); }
+    else hideCo(c);
+  });
+  if (!items.length) return;
+  const colX=Math.max(...items.map(i=>i.x))+70; if (colX+230>innerWidth-16){ items.forEach(i=>hideCo(i.c)); return; }
+  items.sort((a,b)=>a.y-b.y); let lastY=-1e9;
+  items.forEach(i=>{ i.ly=Math.max(i.y,lastY+52); lastY=i.ly; });
+  const over=lastY-(innerHeight-80); if (over>0) items.forEach(i=>i.ly-=over);
+  items.forEach(i=>{ const c=i.c; c.on=true; c.el.classList.add('on');
+    const rx=Math.round(i.x), ry=Math.round(i.y), rly=Math.round(i.ly), rCol=Math.round(colX);
+    if (c.lastX!==rx || c.lastY!==ry || c.lastLY!==rly || c.lastCol!==rCol){
+      c.lastX=rx; c.lastY=ry; c.lastLY=rly; c.lastCol=rCol;
+      c.el.style.transform=`translate3d(${rCol}px,${rly-14}px,0)`;
+      c.path.setAttribute('d',`M${rx},${ry} L${rCol-26},${rly} L${rCol},${rly}`);
+      c.path.style.opacity=1; c.dot.setAttribute('cx',rx); c.dot.setAttribute('cy',ry); c.dot.style.opacity=1;
+    }
+  });
+}
+
+/* ---------- frame loop: renders only when something on screen actually changes ---------- */
+const sm={hero:0,unveil:0,scan:0,verify:0,work:0};
+const clock=new THREE.Clock(), right=new THREE.Vector3(), camT=new THREE.Vector3();
+let layerAnim=false, activeBeam=-2, lastClothT=-1, lastRender=0, wasHidden=false;
+document.fonts.ready.then(()=>{ needs=true; });
+function frame(now){
+  requestAnimationFrame(frame);
+  if (document.hidden || !CF) return;
+  const dt=Math.min(clock.getDelta(),.05), time=clock.elapsedTime;
+  let dirty=needs; needs=false;
+  const SP=SF.sp;
+  for (const n in sm){ if (sm[n]!==SP[n]){ sm[n]=SP[n]; dirty=true; } }
+  const mdx=mouse.x-mouse.sx, mdy=mouse.y-mouse.sy;
+  if (Math.abs(mdx)>.002||Math.abs(mdy)>.002){ mouse.sx+=mdx*(1-Math.exp(-dt*4)); mouse.sy+=mdy*(1-Math.exp(-dt*4)); dirty=true; }
+
+  const op=1-smooth(.15,.85,sm.work);
+  if (op<.01){ if (!wasHidden){ wrap.style.opacity='0'; updateCallouts(-1,[0,0,0],false); tip.classList.remove('on'); wasHidden=true; } return; }
+  if (wasHidden){ wasHidden=false; dirty=true; }
+  wrap.style.opacity=op.toFixed(3);
+
+  const clothT=clamp((sm.unveil-.3)/.6);
+  if (clothT<.02 && ripple>.002){ ripple*=Math.exp(-dt*1.6); dirty=true; }
+  const want= SF.chapter==='scan'?'EVIDENCE': SF.chapter==='verify'?'VERIFIED': SF.chapter==='work'?'':'UNSEEN';
+  if (want!==curWord || (want && wordO<1)) dirty=true;
+  if (!dirty && !layerAnim) return;
+  let dirty2=false;
+
+  // story state
+  const inVerify=sm.verify>.001, ev=SF.evidence(sm.scan), vs=SF.verifyState(sm.verify);
+  const explode=inVerify ? vs.explode : ev.explode;
+  let mode='vuln', reveals=ev.reveal.slice(), act=inVerify?-1:ev.active, beamOn=-1, beamU=0, beamTint=0xfff3e0;
+  if (inVerify){ if (vs.fixed){ mode='fixed'; reveals=[vs.reveal,vs.reveal,vs.reveal]; if (vs.reveal>0&&vs.reveal<1){ beamOn=0; beamU=vs.reveal; beamTint=0xdfe8d6; } } else reveals=[1,1,1]; }
+  else if (act>=0&&act<3&&reveals[act]>0&&reveals[act]<1){ beamOn=act; beamU=reveals[act]; }
+
+  const ee=ease(explode); drawBudget=1;
+  layers.forEach((o,i)=>{ const m=MERGED[i], e=EXPL[i];
+    const tgt=(!inVerify && act>=0 && act<3 && i!==act)?1:0; const dp=tgt-(o.push||0); if (Math.abs(dp)>.002){ o.push=(o.push||0)+dp*(1-Math.exp(-dt*5)); dirty2=true; } else o.push=tgt;
+    o.g.position.x=lerp(m.x,e.x,ee)*(1-.35*o.push); o.g.position.z=lerp(m.z,e.z,ee)-1.9*o.push; o.g.rotation.y=lerp(m.r,e.r,ee);
+    o.g.position.y=SL.base+SL.h/2+Math.sin(ee*Math.PI)*.08; if (updateLayer(o,mode,reveals[i])==='pending') dirty2=true;
+    const dim=1-.75*(o.push||0); o.face.material.emissiveIntensity=.4*dim*(clothT>.6?1:.45); });
+  if (beamOn!==activeBeam){ activeBeam=beamOn; if (beamOn>=0) layers[beamOn].g.add(beam); else beam.removeFromParent(); }
+  if (beamOn>=0){ const yTop=FH/2-TOP/CH*FH, yBot=-FH/2+BOT/CH*FH; beam.position.y=lerp(yTop,yBot,beamU); beamLine.material.color.setHex(beamTint); trailMat.uniforms.uC.value.setHex(beamTint); }
+
+  // camera
+  let c = sm.scan<=.0005 ? (sm.unveil<=.0005 ? lerpK(HERO,UNV,0) : lerpK(HERO,UNV,ease(sm.unveil))) : scanCam(sm.scan);
+  if (inVerify) c=lerpK(OVER,VER,ease(clamp(sm.verify/.3)));
+  placeCamera(c,mouse.sx,mouse.sy); camT.copy(c.t);
+
+  spot.target.position.set(c.t.x,1.4,c.t.z); spot.position.set(c.t.x*.85+.4,9.4,c.t.z+2.4);
+  cone.position.copy(spot.position); cone.lookAt(spot.target.position);
+  coneMat.uniforms.uO.value=.07*(beamOn>=0?.7:1);
+  dust.position.x=c.t.x*.85; dust.position.z=c.t.z;
+
+  // cloth: only rebuild the mesh when its frame changes or the cursor is rippling it
+  const ct=reduce?(clothT>.5?1:0):clothT;
+  if (Math.abs(ct-lastClothT)>1e-4 || (ct<.02 && ripple>.002)){
+    if (ct<.02 && mouse.has){ ray.setFromCamera(ndc.set(mouse.x,mouse.y),camera); ray.ray.intersectPlane(plane,mouseW); }
+    updateCloth(ct,time); lastClothT=ct;
+  }
+
+  // backdrop word
+  if (want!==curWord){ wordO-=dt*2.5; if (wordO<=0){ wordO=0; curWord=want; if (want) drawWord(want); } }
+  else if (want) wordO=Math.min(1,wordO+dt*1.4);
+  word.material.opacity=wordO; word.position.x=camT.x*.35;
+
+  updateCallouts(act,reveals,SF.chapter==='scan');
+
+  // hover any revealed line
+  let shown=false;
+  if (mouse.has && clothT>.98 && sm.work<.3){
+    ray.setFromCamera(ndc.set(mouse.x,mouse.y),camera);
+    const hit=ray.intersectObjects(layers.map(o=>o.face))[0];
+    if (hit){ const o=layers[hit.object.userData.k], d=o.D[mode], n=d.code.length, li=Math.floor(((1-hit.uv.y)*CH-TOP)/((CH-TOP-BOT)/n)), f=d.hits.get(li+1);
+      if (f && (li+.5)/n<reveals[o.k]){ shown=true; const sv=f.rule.sev;
+        tip.innerHTML=`<span class="sev sev-${sv}">${sv}</span><b>${f.rule.title}</b><span class="mono">${o.L.file} · line ${li+1}${f.rule.cwe?' · '+f.rule.cwe:''}</span>`;
+        tip.style.left=mouse.px+'px'; tip.style.top=mouse.py+'px'; } }
+  }
+  tip.classList.toggle('on',shown); document.body.style.cursor=shown?'crosshair':'';
+
+  const t0=performance.now();
+  renderer.render(scene,camera);
+  layerAnim=dirty2;
+  if (now-lastRender<40) perfCheck(now-lastRender); lastRender=now;
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+{
+  "name": "secureflow-web",
+  "version": "0.5.0",
+  "private": true,
+  "description": "SecureFlow: AI security reviewer for vibe-coded websites (JU Techfest 2026, CY-02). Local engine + opt-in Gemini deep check + Cloudflare D1 codebase memory.",
+  "scripts": {
+    "dev": "node tools/dev-server.mjs",
+    "start": "node tools/dev-server.mjs",
+    "deploy": "node tools/deploy.mjs",
+    "scan": "node tools/secureflow-cli.mjs",
+    "test": "node --test tests/engine.test.mjs tests/worker.test.mjs tests/pay.test.mjs tests/cli.test.mjs tests/platform.test.mjs",
+    "e2e": "node tests/e2e.mjs",
+    "e2e:dist": "node tests/e2e.mjs dist",
+    "build": "node tools/build.mjs",
+    "check": "npm test && npm run build && npm run e2e && npm run e2e:dist"
+  },
+  "devDependencies": {
+    "playwright": "^1.45.0",
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}

@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline' https://sdk.cashfree.com https://*.cashfree.com; worker-src blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.cashfree.com https://sandbox.cashfree.com; connect-src 'self' https://*.cashfree.com https://sandbox.cashfree.com https://payments-test.cashfree.com https://payments.cashfree.com https://api.cashfree.com; frame-src 'self' https://*.cashfree.com https://sandbox.cashfree.com https://payments-test.cashfree.com https://payments.cashfree.com; child-src 'self' https://*.cashfree.com https://sandbox.cashfree.com https://payments-test.cashfree.com https://payments.cashfree.com; object-src 'none'; base-uri 'none'; form-action 'self' https://*.cashfree.com https://sandbox.cashfree.com https://payments-test.cashfree.com https://payments.cashfree.com;">
+<meta name="referrer" content="no-referrer">
+<title>SecureFlow Workspace</title>
+<meta name="description" content="AI security reviewer for vibe-coded websites. Line-level evidence, repair prompts, rescan verification.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="src/site.css">
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+</head>
+<body class="app-page">
+<header class="nav">
+  <a class="brand" href="index.html" aria-label="SecureFlow home">
+    <svg viewBox="0 0 26 26" fill="none" aria-hidden="true"><rect x=".75" y=".75" width="24.5" height="24.5" rx="7" stroke="#ede6d9" stroke-opacity=".5"/><path d="M7 9h12M7 13h9M7 17h12" stroke="#ede6d9" stroke-width="1.6" stroke-linecap="round"/><circle cx="19" cy="13" r="1.8" fill="#d4513f"/></svg>
+    SecureFlow
+  </a>
+  <nav class="nav-links" aria-label="Pages">
+    <a href="index.html">The story</a>
+    <a href="app.html" class="active" aria-current="page">Workspace</a>
+    <a href="dashboard.html">Dashboard</a>
+  </nav>
+  <a class="btn btn-ghost btn-sm" href="index.html">← Back to the story</a>
+</header>
+<main>
+  <section id="workspace" aria-busy="false">
+    <div class="ws-intro">
+      <div><div class="eyebrow">SecureFlow workspace</div><h1 class="caps ws-h1">Inspect what <em>your AI</em> shipped.</h1></div>
+      <ol class="flow-strip" aria-label="How it works"><li>Import</li><li>Scan</li><li>AI check</li><li>Understand</li><li>Fix</li><li>Verify</li><li>Remember</li></ol>
+    </div>
+    <div class="app" id="app">
+      <aside class="app-nav" aria-label="Workspace">
+        <div class="app-proj"><span class="ttl" id="proj-name">Demo project</span><span class="badge" id="demo-badge">Demo data</span><span class="meta mono" id="meta"></span></div>
+        <nav class="views-nav" role="tablist" aria-label="Workspace sections" aria-orientation="vertical">
+          <button class="vn on" role="tab" id="vn-overview" data-view="overview" aria-controls="view-overview" aria-selected="true"><span class="vi" aria-hidden="true">◎</span>Overview</button>
+          <button class="vn" role="tab" id="vn-source" data-view="source" aria-controls="view-source" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">▤</span>Source files<span class="cnt" id="n-files"></span></button>
+          <button class="vn" role="tab" id="vn-findings" data-view="findings" aria-controls="view-findings" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">◆</span>Findings<span class="cnt" id="n-f"></span></button>
+          <button class="vn" role="tab" id="vn-fix" data-view="fix" aria-controls="view-fix" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">✎</span>Fix Studio<span class="cnt" id="n-p"></span></button>
+          <button class="vn" role="tab" id="vn-proof" data-view="proof" aria-controls="view-proof" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">↻</span>ProofLoop<span class="cnt" id="n-v"></span></button>
+          <button class="vn" role="tab" id="vn-memory" data-view="memory" aria-controls="view-memory" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">◈</span>Codebase memory<span class="cnt" id="n-m"></span></button>
+          <button class="vn" role="tab" id="vn-ready" data-view="ready" aria-controls="view-ready" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">☰</span>Readiness</button>
+          <button class="vn" role="tab" id="vn-reports" data-view="reports" aria-controls="view-reports" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">⇩</span>Reports</button>
+          <button class="vn" role="tab" id="vn-trust" data-view="trust" aria-controls="view-trust" aria-selected="false" tabindex="-1"><span class="vi" aria-hidden="true">⚿</span>Trust &amp; privacy</button>
+        </nav>
+        <button class="btn btn-danger btn-sm" id="clear-btn">Clear project &amp; data</button>
+      </aside>
+      <div class="app-main">
+        <header class="app-top">
+          <div class="r-status" id="r-status" role="status"></div>
+          <span class="progress" id="progress" hidden><i></i></span>
+          <span class="conn" role="group" aria-label="Connected features">
+            <button class="tog" id="ai-toggle" aria-pressed="false" disabled title="Checking the SecureFlow server…"><i aria-hidden="true"></i>AI deep check</button>
+            <button class="tog" id="mem-toggle" aria-pressed="false" disabled title="Checking the SecureFlow server…" style="position:absolute;width:1px;height:1px;opacity:0.001;border:0;padding:0;overflow:hidden;pointer-events:auto;"><i aria-hidden="true"></i>Codebase memory</button>
+          </span>
+          <span class="top-actions">
+            <button class="btn btn-ghost btn-sm" id="cancel-scan" hidden>Cancel scan</button>
+            <button class="btn btn-crimson btn-sm" id="load-fixed" hidden>Load patched demo</button>
+            <a href="dashboard.html" class="btn btn-ghost btn-sm" id="btn-top-dash" style="text-decoration:none;">Dashboard →</a>
+            <button class="btn btn-solid" id="run">Scan project <span class="arrow">→</span></button>
+          </span>
+        </header>
+        <div class="stale" id="stale" hidden>Your code changed after the last scan. Rescan to update these results.</div>
+        <div class="ai-bar" id="ai-bar" role="status" hidden></div>
+        <div class="views">
+          <!-- OVERVIEW -->
+          <section class="view on" id="view-overview" role="tabpanel" aria-labelledby="vn-overview">
+            <div id="ov-empty" class="ov-empty">
+              <h3>Start a review</h3>
+              <p>SecureFlow reads your code in this tab, explains each potential issue with evidence, proposes fixes you can review, and compares rescans honestly.</p>
+              <div class="start-grid">
+                <button class="start" data-go="demo"><b>Explore the demo</b><span>Three prepared files with known issues. Clearly labelled as demo data.</span></button>
+                <button class="start" data-go="upload"><b>Upload your project</b><span>Folder, .zip or files. It stays in this tab unless you turn on AI deep check.</span></button>
+                <button class="start" data-go="paste"><b>Paste code</b><span>Quick check of a single file or snippet.</span></button>
+              </div>
+              <p class="fine">Then press <b>Scan project</b>. Pattern-based checks: a starting point, not a full audit.</p>
+            </div>
+            <div id="ov-results" class="ov-results" hidden>
+              <div class="ov-summary">
+                <svg class="gauge" id="small-gauge" viewBox="0 0 320 320" role="img" aria-label="Risk score"></svg>
+                <div class="ov-verdict">
+                  <div class="verdict" id="verdict"></div>
+                  <div class="counts">
+                    <div class="count"><b id="c-critical">–</b><span class="sev sev-critical">Critical</span></div>
+                    <div class="count"><b id="c-high">–</b><span class="sev sev-high">High</span></div>
+                    <div class="count"><b id="c-medium">–</b><span class="sev sev-medium">Medium</span></div>
+                    <div class="count"><b id="c-low">–</b><span class="sev sev-low">Low</span></div>
+                    <div class="count"><b id="c-info">–</b><span class="sev sev-info">Info</span></div>
+                  </div>
+                  <div class="sevbar" id="sevbar" role="img" aria-label="Severity distribution"></div>
+                  <details class="score-help"><summary>How the score works</summary><p>Each open finding adds weight by severity (critical 35%, high 20%, medium 10%, low 3%, info 0) times confidence (high ×1, medium ×0.75, low ×0.5); weights combine as 100 × (1 − Π(1 − w)). It summarises these findings only. It is not a probability of being hacked, and 0 does not mean secure.</p></details>
+                </div>
+              </div>
+              <details class="coverage-box" id="coverage-box"><summary id="coverage-sum">Coverage</summary><div id="coverage-body"></div></details>
+              <div class="ov-cols">
+                <div class="card">
+                  <div class="card-h"><h3>Where findings sit</h3><span class="fine">Lines are real import statements; layers are inferred from paths and code. This is not an attack path.</span></div>
+                  <div class="riskmap" id="riskmap"></div>
+                </div>
+                <div class="card">
+                  <div class="card-h"><h3>Fix these first</h3><span class="fine">Ordered by severity and confidence.</span></div>
+                  <ol class="priority" id="priority"></ol>
+                  <div class="next" id="next-action"></div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <!-- SOURCE -->
+          <section class="view" id="view-source" role="tabpanel" aria-labelledby="vn-source" hidden>
+            <div class="panel-bar">
+              <label class="btn btn-ghost btn-sm file-btn">Upload folder<input type="file" id="up-folder" webkitdirectory multiple aria-label="Upload a project folder"></label>
+              <label class="btn btn-ghost btn-sm file-btn">Upload files or .zip<input type="file" id="up-files" multiple aria-label="Upload files or a .zip"></label>
+              <button class="btn btn-ghost btn-sm" id="new-file">Paste code</button>
+              <button class="btn btn-ghost btn-sm" id="load-demo">Load demo</button>
+            </div>
+            <details class="privacy" id="privacy">
+              <summary>Private by design: your code stays in this tab</summary>
+              <ul>
+                <li><b>Processed locally.</b> The engine scan runs in a background worker inside this tab. Nothing is uploaded unless you switch on <b>AI deep check</b> (masked code goes to Google Gemini through the SecureFlow server, for that request only) or <b>Codebase memory</b> (line fingerprints, never code, are stored). Both ask first.</li>
+                <li><b>Nothing in your browser storage.</b> Code, findings and history live in this tab’s memory. Nothing is written to localStorage, sessionStorage, IndexedDB or cookies; a reload starts fresh, and Codebase memory recognises the project from its fingerprints.</li>
+                <li><b>Your originals are untouched.</b> Patches you accept change the in-memory copy only. Export or copy them back yourself.</li>
+                <li>See <b>Trust &amp; privacy</b> for exactly what leaves the browser in each workflow.</li>
+              </ul>
+            </details>
+            <div class="choice" id="choice" hidden role="alertdialog" aria-labelledby="choice-msg"><span id="choice-msg"></span><span class="choice-btns" id="choice-btns"></span></div>
+            <div class="import-status" id="import-status" role="status" hidden></div>
+            <div class="src-body">
+              <nav class="tree" id="tree" aria-label="Project files"></nav>
+              <div class="ed-col">
+                <div class="ed-path"><label for="fname">file</label><input id="fname" spellcheck="false" aria-label="File name (relative path)"><button class="btn btn-ghost btn-sm" id="rm-file" title="Remove this file from the project in this tab">Remove file</button></div>
+                <div class="editor" id="editor">
+                  <pre class="gutter" id="gutter" aria-hidden="true"></pre>
+                  <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Source code editor"></textarea>
+                  <div class="lnhl" id="lnhl" hidden></div><div class="sweep"></div>
+                </div>
+              </div>
+            </div>
+            <p class="note" id="fixed-note" hidden>Patched demo: a prepared fixed version of the three demo files, used to show the rescan. It was not generated by SecureFlow.</p>
+          </section>
+          <!-- FINDINGS -->
+          <section class="view" id="view-findings" role="tabpanel" aria-labelledby="vn-findings" hidden>
+            <div class="filters" id="filters" hidden>
+              <select id="f-sev" data-k="sev" aria-label="Filter by severity"></select>
+              <select id="f-cat" data-k="cat" aria-label="Filter by category"></select>
+              <select id="f-file" data-k="file" aria-label="Filter by file"></select>
+              <select id="f-conf" data-k="conf" aria-label="Filter by confidence"></select>
+              <select id="f-status" data-k="status" aria-label="Filter by status">
+                <option value="open">Open findings</option><option value="all">All, including false positives</option><option value="dismissed">Marked false positive</option>
+                <option value="new" data-needs-v>Newly detected since baseline</option><option value="still" data-needs-v>Still detected since baseline</option>
+              </select>
+              <select id="f-sort" data-k="sort" aria-label="Sort"><option value="severity">Sort: severity</option><option value="confidence">Sort: confidence</option><option value="file">Sort: file and line</option></select>
+              <span class="batch"><label class="chk"><input type="checkbox" id="sel-all"> Select shown</label><span id="f-count" class="mono"></span><button class="btn btn-ghost btn-sm" id="copy-selected" disabled>Copy prompt for selected (0)</button></span>
+            </div>
+            <div class="split">
+              <div class="list" id="list" role="listbox" aria-label="Findings"></div>
+              <div class="detail" id="detail" aria-live="polite"></div>
+            </div>
+          </section>
+          <!-- FIX STUDIO -->
+          <section class="view" id="view-fix" role="tabpanel" aria-labelledby="vn-fix" hidden>
+            <div class="split">
+              <div class="list" id="fix-list" aria-label="Findings to fix"></div>
+              <div class="detail" id="fix-detail"></div>
+            </div>
+          </section>
+          <!-- PROOFLOOP -->
+          <section class="view" id="view-proof" role="tabpanel" aria-labelledby="vn-proof" hidden>
+            <div id="vlist" class="pad"></div>
+            <div class="card timeline-card"><div class="card-h"><h3>Security evolution: this session</h3><span class="fine">Real events only; cleared with the project.</span></div><ol class="timeline" id="timeline"></ol></div>
+          </section>
+          <!-- MEMORY -->
+          <section class="view" id="view-memory" role="tabpanel" aria-labelledby="vn-memory" hidden><div id="memory" class="pad"></div></section>
+          <!-- READINESS -->
+          <section class="view" id="view-ready" role="tabpanel" aria-labelledby="vn-ready" hidden><div id="ready" class="pad"></div></section>
+          <!-- REPORTS -->
+          <section class="view" id="view-reports" role="tabpanel" aria-labelledby="vn-reports" hidden>
+            <div class="pad">
+              <div class="rep-actions">
+                <button class="btn btn-solid btn-sm" id="exp-html" disabled>Export founder report (HTML)</button>
+                <button class="btn btn-ghost btn-sm" id="exp-md" disabled>Export Markdown</button>
+                <button class="btn btn-ghost btn-sm" id="exp-json" disabled>Export JSON</button>
+                <button class="btn btn-ghost btn-sm" id="copy-md" disabled>Copy Markdown</button>
+                <button class="btn btn-solid btn-sm" id="btn-export-fixed-zip" style="background:var(--gold); color:#12100e; font-weight:600;">Download Fixed Project (.zip)</button>
+              </div>
+              <p class="export-note">Reports are generated in this tab. They can contain code snippets from your project (secret values are masked), so store them with care.</p>
+              <div id="report-preview" class="report-preview"></div>
+            </div>
+          </section>
+          <!-- TRUST -->
+          <section class="view" id="view-trust" role="tabpanel" aria-labelledby="vn-trust" hidden><div id="trust" class="pad"></div></section>
+        </div>
+      </div>
+    </div>
+    <p class="engine-note" id="engine-note"></p>
+  </section>
+</main>
+<footer>
+  <span>SecureFlow · AI Security Reviewer for Vibe-Coded Websites</span>
+  <span>The engine runs in your browser. AI deep check and Codebase memory are opt-in. Findings are evidence for review, not a full security audit.</span>
+  <span>JU Techfest 2026 · CY-02</span>
+</footer>
+<dialog id="clear-dlg" aria-labelledby="dlg-title" aria-describedby="dlg-text">
+  <h3 id="dlg-title">Clear project &amp; data?</h3>
+  <p id="dlg-text"></p>
+  <div class="dlg-btns"><button class="btn btn-ghost btn-sm" id="dlg-cancel" autofocus>Keep project</button><button class="btn btn-danger btn-sm" id="dlg-confirm">Clear everything</button></div>
+</dialog>
+<dialog id="copy-dlg" aria-labelledby="copy-dlg-title">
+  <h3 id="copy-dlg-title">Copy manually</h3>
+  <p>Clipboard access is blocked here. The text is selected below: press Ctrl+C (or ⌘C).</p>
+  <textarea id="manual-copy-text" readonly rows="10" aria-label="Text to copy"></textarea>
+  <div class="dlg-btns"><button class="btn btn-solid btn-sm" id="copy-dlg-close">Done</button></div>
+</dialog>
+<dialog id="consent-dlg" aria-labelledby="cs-title">
+  <h3 id="cs-title"></h3>
+  <div id="cs-body"></div>
+  <div class="dlg-btns"><button class="btn btn-ghost btn-sm" id="cs-cancel" autofocus>Not now</button><button class="btn btn-solid btn-sm" id="cs-ok">Turn on</button></div>
+</dialog>
+<dialog id="auth-dlg" aria-labelledby="auth-dlg-title" style="max-width: 440px; padding: 24px; border-radius: 8px; background: #1a1614; border: 1px solid var(--border); color: var(--fg); box-shadow: 0 16px 40px rgba(0,0,0,0.7);">
+  <h3 id="auth-dlg-title" style="margin-top:0; font-size: 1.25rem;">Sign in to SecureFlow</h3>
+  <p class="fine" style="margin-top: -6px; margin-bottom: 14px; line-height: 1.4;">Sign in with your email to proceed to Cashfree payment, unlock verified repairs, and download fixed projects.</p>
+  
+  <div style="display:flex; gap:8px; margin-bottom:16px; border-bottom:1px solid var(--border); padding-bottom:6px;">
+    <button type="button" id="auth-tab-otp" class="btn btn-ghost btn-sm" style="color:var(--gold); font-weight:600; border-bottom:2px solid var(--gold); border-radius:0;">Email OTP</button>
+    <button type="button" id="auth-tab-pass" class="btn btn-ghost btn-sm" style="color:var(--fg-muted); border-radius:0;">Password</button>
+  </div>
+
+  <!-- OTP MODE -->
+  <div id="dlg-auth-otp-sec">
+    <div style="margin-bottom: 12px;">
+      <label class="fine" for="dlg-auth-email" style="display:block; margin-bottom: 4px;">Gmail / Email Address</label>
+      <input type="email" id="dlg-auth-email" required placeholder="name@gmail.com" style="width:100%; box-sizing:border-box; padding:10px 12px; background:var(--bg); border:1px solid var(--border); color:var(--fg); border-radius:4px;">
+    </div>
+    <div id="dlg-otp-code-box" style="display:none; margin-bottom: 14px;">
+      <label class="fine" for="dlg-auth-otp" style="display:block; margin-bottom: 4px;">6-Digit Verification Code</label>
+      <input type="text" id="dlg-auth-otp" maxlength="6" inputmode="numeric" placeholder="123456" style="width:100%; box-sizing:border-box; padding:10px 12px; background:var(--bg); border:1px solid var(--border); color:var(--gold); font-size:1.2rem; font-family:var(--font-mono); letter-spacing:4px; text-align:center; border-radius:4px;">
+      <div id="dlg-otp-dev-hint" class="fine" style="color:var(--gold); margin-top:6px; display:none;"></div>
+    </div>
+    <div class="dlg-btns" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button type="button" class="btn btn-ghost btn-sm" id="dlg-auth-cancel">Cancel</button>
+      <button type="button" class="btn btn-solid btn-sm" id="dlg-otp-action-btn">Send Verification Code →</button>
+    </div>
+  </div>
+
+  <!-- PASSWORD MODE -->
+  <form id="dlg-auth-form" style="display:none;">
+    <div style="margin-bottom: 12px;">
+      <label class="fine" for="dlg-auth-email-pass" style="display:block; margin-bottom: 4px;">Gmail / Email Address</label>
+      <input type="email" id="dlg-auth-email-pass" required placeholder="name@gmail.com" style="width:100%; box-sizing:border-box; padding:10px 12px; background:var(--bg); border:1px solid var(--border); color:var(--fg); border-radius:4px;">
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label class="fine" for="dlg-auth-pass" style="display:block; margin-bottom: 4px;">Password</label>
+      <input type="password" id="dlg-auth-pass" required placeholder="••••••••••••" minlength="6" style="width:100%; box-sizing:border-box; padding:10px 12px; background:var(--bg); border:1px solid var(--border); color:var(--fg); border-radius:4px;">
+    </div>
+    <div class="dlg-btns" style="display:flex; justify-content:space-between; align-items:center;">
+      <button type="button" class="btn btn-ghost btn-sm" id="dlg-auth-cancel-pass">Cancel</button>
+      <button type="submit" class="btn btn-solid btn-sm" id="dlg-auth-submit">Sign In / Sign Up →</button>
+    </div>
+  </form>
+
+  <div id="dlg-auth-err" style="color:#f87171; font-size:0.85rem; margin-top:10px;"></div>
+  <div id="dlg-auth-msg" style="color:#4ade80; font-size:0.85rem; margin-top:10px;"></div>
+</dialog>
+<div id="announce" class="sr-only" aria-live="polite"></div>
+<div id="tip" role="status"></div>
+<div class="toast" id="toast" role="status">Copied</div>
+
+<script src="src/engine.js"></script>
+<script src="src/demo.js"></script>
+<script src="src/common.js"></script>
+<script src="src/workspace.js"></script>
+<script src="src/ai.js"></script>
+</body>
+</html>
